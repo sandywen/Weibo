@@ -1,0 +1,49 @@
+<?php header('Content-Type:text/html;charset=utf-8');?>
+<meta http-equiv="Content-Type"content="text/html;charset=utf-8"/>
+<html>
+<head>
+<script type="text/javascript">
+function showdata(str)
+{
+var xmlhttp;    
+if (str=="")
+  {
+  document.getElementById("txtHint").innerHTML="";
+  return;
+  }
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","a.php?q="+str,true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body>
+<form action="" style="margin-top:15px;">
+<label>请选择一位客户：
+<select name="customers" onchange="showdata(this.value)" style="font-family:Verdana, Arial, Helvetica, sans-serif;">
+<option value="f">Parade</option>
+<option value="gp">Stock</option>
+<option value="lyb">langya bang</option>
+<option value="tjx">tianjiaxia </option>
+</select>
+</label>
+</form>
+<div id="txtHint">客户信息将在此处列出 ...</div>
+
+</body>
+</html>
+

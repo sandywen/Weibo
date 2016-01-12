@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumino - Charts</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/datepicker3.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+
+<!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
+</head>
+
+<body>
+ 
+
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>Lumino</span>Admin</a>
+				<ul class="user-menu">
+					<li class="dropdown pull-right">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> User <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+							
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span> Home</a></li>
+			<li><a href="tables.php"><span class="glyphicon glyphicon-list-alt"></span> Info tables</a></li>
+			<li><a href="user_analysis.html"><span class="glyphicon glyphicon-pencil"></span> User Analysis</a></li>
+			<li><a href="echart_.html"><span class="glyphicon glyphicon-stats"></span> Heat Curve</a></li>
+			<li><a href="path_analysis.html"><span class="glyphicon glyphicon-th"></span> Path Analysis</a></li>
+			<li role="presentation" class="divider"></li>
+			<li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login Page</a></li>
+		</ul>
+		<div class="attribution">Template by <a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/">Medialoot</a></div>
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main" style="height:800px;width:1300px;border:1px solid #ccc;padding:10px;">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active">Charts</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header" id="Header">Heat Curve of Weibo Event</h1>
+
+				
+			</div>
+		</div><!--/.row-->
+	        <form>		
+		<label>Please select an event:
+		<select name="customers" onchange="showdata(this.value)" style="font-family:Verdana, Arial, Helvetica, sans-serif;">
+		<option value="yb"></option>
+		<option value="yb">Parade</option>
+		<option value="gp">Stock</option>
+		<option value="lyb">Langya List</option>
+		<option value="tjx">Velly expensive xia </option>
+		<option value="tb">TaoBao </option>
+		</select>
+		</label>
+		</form>
+		<div id="txtHint">Data loading ...</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+				<!--	<div class="panel-heading" id = "panel_heading">Line Chart</div>-->
+					<div class="panel-body" id ="panel_body">
+					<div>
+					  <button onclick="append();">Append point</button>
+					  <button onclick="restart();">Replay</button>
+					  <button onclick="draw_chart(data_x,data_y);">Reset</button>
+					</div>
+					  <div id="main" style="height:600px;width:1070px;border:1px solid #ccc;padding:10px;"></div>
+					</div>
+					
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+	</div>	<!--/.main-->
+<!--<script src="js/index.js"></script>-->
+<script src="echarts/echarts.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+var data_x = [];
+var data_y = [];
+
+function showdata(str)
+{
+var xmlhttp;    
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        var GLO=xmlhttp.responseText;
+        var obj=eval('('+GLO+')');
+//	document.getElementById("txtHint").innerHTML=GLO;
+	var jsonstr_x="[]";
+	var jsonstr_y="[]";
+	var jsonarray_x = eval('('+jsonstr_x+')');
+	var jsonarray_y = eval('('+jsonstr_y+')');
+	var obj_x = {
+		"type":'category',
+		"data":[]
+	}
+	var obj_y_begin = {
+		"name":'NULL',
+		"type":'line',
+		"data":[]
+	}
+	var obj_y_end = {
+		"name":'quntities',
+		"type":'line',
+		"data":[]
+	}
+	for(var sss in obj){
+		obj_x.data.push(sss);
+		obj_y_begin.data.push(0);
+		obj_y_end.data.push(obj[sss]);
+	}	
+	jsonarray_x.push(obj_x);
+	jsonarray_y.push(obj_y_begin);
+	jsonarray_y.push(obj_y_end);
+	data_x = jsonarray_x;
+        data_y=jsonarray_y;
+     }
+	document.getElementById("txtHint").innerHTML="Data loaded.";
+    }
+  
+xmlhttp.open("GET","be_time_get.php?q="+str,true);
+xmlhttp.send();
+}
+</script>
+<script> 
+            var x_init= [
+                    {
+                        type : 'category',
+                        data : ['DINGYANG','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+                    }
+                ];
+            var y_init=[
+                    {
+                        name:'jiangyuliang',
+                        type:'bar',
+                        data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+                    },
+                    {
+                        name:'end',
+                        type:'bar',
+                        data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+                    }
+                ];
+</script>
+<script type="text/javascript">
+ function draw_chart(str1,str2)
+{
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths: {
+            echarts: './echarts'
+        }
+    });
+    
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+           // 'echarts/chart/map'
+        ],
+        function (ec) {
+            //--- zhexian ---
+            var myChart = ec.init(document.getElementById('main'));
+            myChart.setOption({
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                   // data:['begin','end']
+                    data:['Weibo quntities in period: 1 day']
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line','bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                xAxis : str1,
+               
+                yAxis : [
+                    {
+                        type : 'value',
+                        splitArea : {show : true}
+                    }
+                ],
+                series : str2
+            });
+            
+        }
+    );
+}
+draw_chart(x_init,y_init);
+</script>
+	<script>
+		!function ($) {
+		    $(document).on("click","ul.nav li.parent > a > span.icon", function(){          
+		        $(this).find('em:first').toggleClass("glyphicon-minus");      
+		    }); 
+		    $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+		}(window.jQuery);
+
+		$(window).on('resize', function () {
+		  if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		})
+		$(window).on('resize', function () {
+		  if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		})
+	</script>
+	
+</body>
+
+</html>

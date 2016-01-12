@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumino - Charts</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/datepicker3.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+
+<!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container-fluid">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="#"><span>Lumino</span>Admin</a>
+<ul class="user-menu">
+<li class="dropdown pull-right">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> User <span class="caret"></span></a>
+<ul class="dropdown-menu" role="menu">
+<li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+<li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div><!-- /.container-fluid -->
+</nav>
+
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+<form role="search">
+<div class="form-group">
+<input type="text" class="form-control" placeholder="Search">
+</div>
+</form>
+<ul class="nav menu">
+<li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span> Home</a></li>
+<li><a href="tables.php"><span class="glyphicon glyphicon-list-alt"></span> Info tables</a></li>
+<li><a href="user_analysis.html"><span class="glyphicon glyphicon-pencil"></span> User Analysis</a></li>
+<li><a href="echart_.html"><span class="glyphicon glyphicon-stats"></span> Heat Curve</a></li>
+<li><a href="path_analysis.html"><span class="glyphicon glyphicon-th"></span> Path Analysis</a></li>
+<li role="presentation" class="divider"></li>
+<li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login Page</a></li>
+</ul>
+<div class="attribution">Template by <a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/">Medialoot</a></div>
+</div><!--/.sidebar-->
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main" style="height:1050px;width:1300px;border:1px solid #ccc;padding:10px;">			
+<div class="row">
+<ol class="breadcrumb">
+<li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+<li class="active">Path Analysis</li>
+</ol>
+</div><!--/.row-->
+
+<div class="row">
+<div class="col-lg-12">
+<h1 class="page-header" id="Header">Path of Weibo Event</h1>
+
+
+</div>
+</div><!--/.row-->
+<form>		
+<label>Please select an event:
+<select name="customers" onchange="showdata(this.value)" style="font-family:Verdana, Arial, Helvetica, sans-serif;">
+<option value="yb"></option>
+<option value="yb">Parade</option>
+<option value="gp">Stock</option>
+<option value="lyb">Langya List</option>
+<option value="tjx2">Velly expensive xia </option>
+<option value="tb">TaoBao </option>
+</select>
+</label>
+</form>
+<div id="txtHint">Data loading ...</div>
+<div class="row">
+<div class="col-lg-12">
+<div class="panel panel-default">
+<!--	<div class="panel-heading" id = "panel_heading">Line Chart</div>-->
+<div class="panel-body" id ="panel_body">
+<div>
+<button onclick="append();">Append point</button>
+<button onclick="restart();">Replay</button>
+<button onclick="draw_chart(data_x,data_y);">Reset</button>
+</div>
+<div id="main" style="height:770px;width:1070px;border:1px solid #ccc;padding:10px;"></div>
+</div>
+
+</div>
+</div>
+</div>
+</div><!--/.row-->
+</div>	<!--/.main-->
+<!--<script src="js/index.js"></script>-->
+<script src="echarts/echarts.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+var data_x = [];
+var data_y = [];
+function newnode(s1,s2,s3,s4,s5){
+	var node={
+name:s1,
+     value:s2,
+     id:s3,
+     depth:s4,
+     category:s5
+	}	
+	return node;
+}
+function newlink(s1,s2,s3){
+	var link={
+source:s1,
+       target:s2,
+       weight:s3
+	}       
+	return link;
+}
+
+function showdata(str)
+{
+	var xmlhttp;    
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			var GLO=xmlhttp.responseText;
+			var obj=eval('('+GLO+')');
+			document.getElementById("txtHint").innerHTML=obj[0].uid;
+			for(var i=0;i<obj.length;i++){
+				var sss=obj[i];
+				if(sss.uid_r=="0"){
+
+					var node=newnode(sss.uid,3,sss.uid,0,2);
+					data_x.push(node);
+				}else{
+					var node=newnode(sss.uid,2,sss.uid,sss.depth,sss.category);
+					data_x.push(node);
+					var link=newlink(sss.uid_r,sss.uid,1);
+					data_y.push(link);
+				}
+			}
+		}
+		document.getElementById("txtHint").innerHTML="Data loaded.";
+		draw_chart(data_x,data_y);
+	}
+
+	xmlhttp.open("GET","id_rid_get.php?q="+str,true);
+	xmlhttp.send();
+}
+</script>
+<script>
+var nodes = [];
+var links = [];
+var constMaxDepth = 2;
+var constMaxChildren = 7;
+var constMinChildren = 4;
+var constMaxRadius = 10;
+var constMinRadius = 2;
+function rangeRandom(min, max) {
+	return Math.random() * (max - min) + min;
+}
+
+function createRandomNode(depth) {
+	var node = {
+name : 'NODE_' + nodes.length,
+       value : rangeRandom(constMinRadius, constMaxRadius),
+       // Custom properties
+       id : nodes.length,
+       depth : depth,
+       category : depth === constMaxDepth ? 0 : 1
+	}
+	nodes.push(node);
+
+	return node;
+}
+
+function forceMockThreeData() {
+	var depth = 0;
+	var rootNode = {
+name : 'ROOT',
+       value : rangeRandom(constMinRadius, constMaxRadius),
+       // Custom properties
+       id : 0,
+       depth : 0,
+       category : 2
+	}
+	nodes.push(rootNode);
+	var rootNode2 = {
+name : 'yyyyyyyyyyyyyyyyyyyyyyy',
+       value : rangeRandom(constMinRadius, constMaxRadius),
+       // Custom properties
+       id : 1,
+       depth : 0,
+       category : 2
+	}
+
+	nodes.push(rootNode2);
+
+	function mock(parentNode, depth) {
+		var nChildren = Math.round(rangeRandom(constMinChildren, constMaxChildren));
+
+		for (var i = 0; i < nChildren; i++) {
+			var childNode = createRandomNode(depth);
+			links.push({
+source : parentNode.id,
+target : childNode.id,
+weight : 1 
+});
+if (depth < constMaxDepth) {
+	mock(childNode, depth+1 );
+}
+}
+}
+
+mock(rootNode, 0);
+mock(rootNode2, 0);
+}
+
+forceMockThreeData();
+</script>
+	<script type="text/javascript">
+function draw_chart(str1,str2)
+{
+	// Step:3 conifg ECharts's path, link to echarts.js from current page.
+	// Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+	require.config({
+paths: {
+echarts: './echarts'
+}
+});
+
+// Step:4 require echarts and use it in the callback.
+// Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+require(
+		[
+		'echarts',
+		// 'echarts/chart/bar',
+		// 'echarts/chart/line',
+		'echarts/chart/force'
+		],
+		function (ec) {
+		var myChart = ec.init(document.getElementById('main'));
+		//var nodes = [];
+		//var links = [];
+		var constMaxDepth = 2;
+		var constMaxChildren = 7;
+		var constMinChildren = 4;
+		var constMaxRadius = 10;
+		var constMinRadius = 2;
+
+		/*function rangeRandom(min, max) {
+		  return Math.random() * (max - min) + min;
+		  }
+
+		  function createRandomNode(depth) {
+		  var node = {
+name : 'NODE_' + nodes.length,
+value : rangeRandom(constMinRadius, constMaxRadius),
+		// Custom properties
+id : nodes.length,
+depth : depth,
+category : depth === constMaxDepth ? 0 : 1
+}
+nodes.push(node);
+
+return node;
+}
+
+function forceMockThreeData() {
+var depth = 0;
+var rootNode = {
+name : 'ROOT',
+value : rangeRandom(constMinRadius, constMaxRadius),
+		// Custom properties
+id : 0,
+depth : 0,
+category : 2
+}
+nodes.push(rootNode);
+var rootNode2 = {
+name : 'yyyyyyyyyyyyyyyyyyyyyyy',
+value : rangeRandom(constMinRadius, constMaxRadius),
+		// Custom properties
+id : 1,
+depth : 0,
+category : 2
+}
+
+nodes.push(rootNode2);
+
+function mock(parentNode, depth) {
+var nChildren = Math.round(rangeRandom(constMinChildren, constMaxChildren));
+
+for (var i = 0; i < nChildren; i++) {
+var childNode = createRandomNode(depth);
+links.push({
+source : parentNode.id,
+target : childNode.id,
+weight : 1 
+});
+if (depth < constMaxDepth) {
+mock(childNode, depth+1 );
+}
+}
+}
+
+mock(rootNode, 0);
+mock(rootNode2, 0);
+}
+
+forceMockThreeData();
+		 */
+option = {
+title : {
+text: 'Force',
+      subtext: 'Force-directed tree',
+      x:'right',
+      y:'bottom'
+	},
+tooltip : {
+trigger: 'item',
+	 formatter: '{a} : {b}'
+	  },
+toolbox: {
+show : true,
+       feature : {
+restore : {show: true},
+	  magicType: {show: true, type: ['force', 'chord']},
+	  saveAsImage : {show: true}
+       }
+	 },
+legend: {
+x: 'left',
+   data:['叶子节点','非叶子节点', '根节点']
+	},
+series : [
+	 {
+type:'force',
+     name : "Force tree",
+     ribbonType: false,
+     categories : [
+     {
+name: '叶子节点'
+     },
+     {
+name: '非叶子节点'
+     },
+     {
+name: '根节点'
+     }
+     ],
+	     itemStyle: {
+normal: {
+label: {
+show: false
+       },
+nodeStyle : {
+brushType : 'both',
+	    borderColor : 'rgba(255,215,0,0.6)',
+	    borderWidth : 1
+	    }		
+	}
+	     },
+minRadius : constMinRadius,
+	    maxRadius : constMaxRadius,
+	    coolDown: 0.995,
+	    steps: 10,
+	    nodes : str1,
+	    links : str2,
+	    steps: 1
+	 }
+	]
+};
+myChart.setOption(option);
+});
+}
+draw_chart(nodes,links);
+</script>
+
+<script>
+!function ($) {
+	$(document).on("click","ul.nav li.parent > a > span.icon", function(){          
+			$(this).find('em:first').toggleClass("glyphicon-minus");      
+			}); 
+	$(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+}(window.jQuery);
+
+$(window).on('resize', function () {
+		if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		})
+$(window).on('resize', function () {
+		if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		})
+</script>
+
+</body>
+
+</html>

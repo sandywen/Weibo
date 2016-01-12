@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumino - Charts</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/datepicker3.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+
+<!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
+</head>
+
+<body>
+ 
+
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><span>Lumino</span>Admin</a>
+				<ul class="user-menu">
+					<li class="dropdown pull-right">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> User <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+							<li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+							
+		</div><!-- /.container-fluid -->
+	</nav>
+		
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<form role="search">
+			<div class="form-group">
+				<input type="text" class="form-control" placeholder="Search">
+			</div>
+		</form>
+		<ul class="nav menu">
+			<li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span> Home</a></li>
+			<li><a href="charrts.html"><span class="glyphicon glyphicon-stats"></span> Charts</a></li>
+			<li><a href="tables.php"><span class="glyphicon glyphicon-list-alt"></span> Tables</a></li>
+			<li role="presentation" class="divider"></li>
+			<li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login Page</a></li>
+		</ul>
+		<div class="attribution">Template by <a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/">Medialoot</a></div>
+	</div><!--/.sidebar-->
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">			
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active">Cd</li>
+			</ol>
+		</div><!--/.row-->
+		
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="page-header">Cdddddddddddddddddd</h1>
+				
+			</div>
+		</div><!--/.row-->
+	        <form>		
+		<label>Please select an event:
+		<select name="customers" onchange="showdata(this.value)" style="font-family:Verdana, Arial, Helvetica, sans-serif;">
+		<option value="yb">Parade</option>
+		<option value="gp">Stock</option>
+		<option value="lyb">Langya List</option>
+		<option value="tjx">Velly expensive xia </option>
+		<option value="tb">Taobao </option>
+		</select>
+		</label>
+		</form>
+		<div id="txtHint">客户信息将在此处列出 ...</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="panel panel-default">
+					<div class="panel-heading" id = "panel_heading">Line Chart</div>
+					<div class="panel-body" id ="panel_body">
+					<div>
+					  <button onclick="append();">Append point</button>
+					  <button onclick="restart();">Replay</button>
+					  <button onclick="reset(dataAll);">Reset</button>
+					</div>
+					<div class="canvas-wrapper" id ="testChart">
+						<!--<canvas class="main-chart" id="line-chart" width ="500" height ="400" ></canvas>-->
+					</div>
+					
+					</div>
+				</div>
+			</div>
+		</div><!--/.row-->
+		
+	<!--	<div class="row">
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">Pie Chart</div>
+					<div class="panel-body">
+						<div class="canvas-wrapper">
+							<canvas class="chart" id="pie-chart" ></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		
+	</div>	<!--/.main-->
+	 <script src="js/index.js"></script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+<!--	<script src="js/bootstrap.min.js"></script>
+	<script src="js/chart.min.js"></script>
+	
+	<script src="js/chart-data.js"></script>
+	<script src="js/easypiechart.js"></script>
+	<script src="js/easypiechart-data.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+
+	<script>
+	        function draw(){
+		var lineChartData = {
+				
+			labels:["1","2","3"],
+			datasets : [
+				{
+					fillColor : "rgba(220,220,220,0.5)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					data:[y[1],y[2],y[3]]
+ 
+				}]
+			
+		}
+
+		var myLine = new Chart(document.getElementById("line-chart").getContext("2d")).Line(lineChartData);
+		}
+	</script>
+-->
+<script type="text/javascript">
+var dataAll = [];
+var x=[];
+var y=[];
+function showdata(str)
+{
+var xmlhttp;    
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+        var GLO=xmlhttp.responseText;
+        var obj=eval('('+GLO+')');
+	document.getElementById("txtHint").innerHTML=GLO;
+	//var len=10;
+	var i=0;
+	var x_lable=[];
+	var y_lable=[];
+        for(var sss in obj){
+		x_lable[i]=sss;
+		y_lable[i]=obj[sss];
+		i++;
+	}
+	x=x_lable;
+	y=y_lable;
+	var jsonstr="[]";
+	var jsonarray = eval('('+jsonstr+')');
+ 	for (var sss in obj){
+		var arr = {
+			"label":sss,
+			"value":obj[sss],
+			"future":true
+		}
+		jsonarray.push(arr)
+	}
+	dataAll = jsonarray;
+	document.getElementById("txtHint").innerHTML=y_lable;
+//	draw();
+    }
+  }
+xmlhttp.open("GET","a.php?q="+str,true);
+xmlhttp.send();
+}
+</script>
+	<script>
+		!function ($) {
+		    $(document).on("click","ul.nav li.parent > a > span.icon", function(){          
+		        $(this).find('em:first').toggleClass("glyphicon-minus");      
+		    }); 
+		    $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+		}(window.jQuery);
+
+		$(window).on('resize', function () {
+		  if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		})
+		$(window).on('resize', function () {
+		  if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		})
+	</script>
+	
+</body>
+
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumino - Charts</title>
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/datepicker3.css" rel="stylesheet">
+<link href="css/styles.css" rel="stylesheet">
+
+<!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
+</head>
+
+<body>
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container-fluid">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand" href="#"><span>Lumino</span>Admin</a>
+<ul class="user-menu">
+<li class="dropdown pull-right">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> User <span class="caret"></span></a>
+<ul class="dropdown-menu" role="menu">
+<li><a href="#"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+<li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+</div><!-- /.container-fluid -->
+</nav>
+
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+<form role="search">
+<div class="form-group">
+<input type="text" class="form-control" placeholder="Search">
+</div>
+</form>
+<ul class="nav menu">
+<li><a href="index.html"><span class="glyphicon glyphicon-dashboard"></span> Home</a></li>
+<li><a href="tables.php"><span class="glyphicon glyphicon-list-alt"></span> Info tables</a></li>
+<li><a href="user_analysis.html"><span class="glyphicon glyphicon-pencil"></span> User Analysis</a></li>
+<li><a href="echart_.html"><span class="glyphicon glyphicon-stats"></span> Heat Curve</a></li>
+<li><a href="path_analysis.html"><span class="glyphicon glyphicon-th"></span> Path Analysis</a></li>
+<li role="presentation" class="divider"></li>
+<li><a href="login.html"><span class="glyphicon glyphicon-user"></span> Login Page</a></li>
+</ul>
+<div class="attribution">Template by <a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/">Medialoot</a></div>
+</div><!--/.sidebar-->
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main" style="height:1050px;width:1300px;border:1px solid #ccc;padding:10px;">			
+<div class="row">
+<ol class="breadcrumb">
+<li><a href="#"><span class="glyphicon glyphicon-home"></span></a></li>
+<li class="active">User Analysis</li>
+</ol>
+</div><!--/.row-->
+
+<div class="row">
+<div class="col-lg-12">
+<h1 class="page-header" id="Header">User Analysis</h1>
+
+
+</div>
+</div><!--/.row-->
+<form>		
+<label>Please select an event:
+<select name="customers" onchange="showdata(this.value)" style="font-family:Verdana, Arial, Helvetica, sans-serif;">
+<option value="yb"></option>
+<option value="yb">Parade</option>
+<option value="gp">Stock</option>
+<option value="lyb">Langya List</option>
+<option value="tjx2">Velly expensive xia </option>
+<option value="tb">TaoBao </option>
+</select>
+</label>
+</form>
+<div id="txtHint">Data loading ...</div>
+<div class="row">
+<div class="col-lg-12">
+<div class="panel panel-default">
+<!--	<div class="panel-heading" id = "panel_heading">Line Chart</div>-->
+<div class="panel-body" id ="panel_body">
+<div>
+<button onclick="append();">Append point</button>
+<button onclick="restart();">Replay</button>
+<button onclick="draw_pie(data_x,data_y);">Reset</button>
+</div>
+<div id="main2" style="height:600px;width:1070px;border:1px solid #ccc;padding:10px;"></div>
+<div id="main" style="height:600px;width:1070px;border:1px solid #ccc;padding:10px;"></div>
+
+
+</div>
+</div>
+</div><!--/.row-->
+</div>	<!--/.main-->
+
+
+
+
+
+
+
+<!--<script src="js/index.js"></script>-->
+<script src="echarts/echarts.js"></script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+var data_x = [];
+var data_y = [];
+var list=[0,3,4,5,7,8,10,12,1,2,6,9,11,13];
+function newnode(s1,s2,s3,s4,s5){
+	var node={
+name:s1,
+     value:s2,
+     id:s3,
+     depth:s4,
+     category:s5
+	}	
+	return node;
+}
+function newlink(s1,s2,s3){
+	var link={
+source:s1,
+       target:s2,
+       weight:s3
+	}       
+	return link;
+}
+
+function showdata(str)
+{
+	var xmlhttp;    
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			var GLO=xmlhttp.responseText;
+			var obj=eval('('+GLO+')');
+			document.getElementById("txtHint").innerHTML=obj[0].f1;
+			for(var i=1;i<=13;i++){
+				var strtmp="f"+list[i].toString();
+				data_x.push(obj[0][strtmp]);
+				data_y.push(obj[1][strtmp]);
+			}
+		draw_pie(79673,50307,12134);
+		}
+		document.getElementById("txtHint").innerHTML="Data loaded.";
+		draw_chart(data_x,data_y);
+	}
+
+	xmlhttp.open("GET","means_shuijunfeatrue.php",true);
+	xmlhttp.send();
+}
+</script>
+
+
+
+
+
+	<script type="text/javascript">
+function draw_chart(str1,str2)
+{
+	// Step:3 conifg ECharts's path, link to echarts.js from current page.
+	// Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+	require.config({
+paths: {
+echarts: './echarts'
+}
+});
+
+// Step:4 require echarts and use it in the callback.
+// Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+require(
+		[
+		'echarts',
+		// 'echarts/chart/bar',
+		// 'echarts/chart/line',
+		'echarts/chart/radar'
+		],
+		function (ec) {
+		var myChart = ec.init(document.getElementById('main'));
+option = {
+    title : {
+        text: 'Army vs User',
+        subtext: 'Data come from Weibo event "Tianjia Xia"'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        orient : 'vertical',
+        x : 'right',
+        y : 'bottom',
+        data:['army info','non-army info']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    polar : [
+       {
+          /* indicator : [
+               { text: 'f1:Number of fans', max: 20},
+               { text: 'f2:Commented times', max: 0.01},
+               { text: 'f3:Praised times', max: 0.001},
+               { text: 'f4:Active days', max: 50},
+               { text: 'f5:Forwarding ratio', max: 0.02},
+               { text: 'f6:Number of fans', max: 0.002},
+               { text: 'f7:Commented times', max: 5},
+               { text: 'f8:Praised times', max: 0.02},
+               { text: 'f8:Active days', max: 0.01},
+               { text: 'f10:Forwarding ratio', max: 50},
+               { text: 'f11:Variance of post time interval', max:0.01},
+               { text: 'f12:Variance of post time interval', max:10},
+               { text: 'f13:Variance of post time interval', max:0.1},
+ 		
+	       ]*/
+		       indicator : [
+               { text: 'f3:commented times', max: 0.0015},
+               { text: 'f4:Praised times', max: 50},
+               { text: 'f3:User item forwarded by me', max: 0.02},
+               { text: 'f4:Active days', max: 4},
+               { text: 'f5:Forwarding times', max: 0.02},
+               { text: 'f6:Forwarding ratio', max: 60},
+               { text: 'f7:Praised ratio', max: 5},
+               { text: 'f8:User item', max: 20},
+               { text: 'f8:be forwarded times', max: 0.005},
+               { text: 'f10:Variance of post', max: 0.0015},
+               { text: 'f11:posrt times', max:0.01},
+               { text: 'f12:comment ratio', max:0.01},
+               { text: 'f13:posts in one day', max:0.1},
+ 		
+	       ]
+
+        }
+    ],
+    calculable : true,
+    series : [
+        {
+            name: 'Army us User',
+            type: 'radar',
+            data : [
+                {
+                    value : str1,
+                    name : 'Army'
+                },
+                 {
+                    value : str2,
+                    name : 'user'
+                }
+            ]
+        }
+    ]
+};
+                    
+	myChart.setOption(option);
+});
+}
+var init_data_x= [0,0,0,0,0,0,0,0,0,0,0,0,0];
+var init_data_y= [0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+draw_chart(init_data_x,init_data_y);
+</script>
+<script type="text/javascript">
+function draw_pie(a,b,c)
+{
+	// Step:3 conifg ECharts's path, link to echarts.js from current page.
+	// Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+	require.config({
+paths: {
+echarts: './echarts'
+}
+});
+
+// Step:4 require echarts and use it in the callback.
+// Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+require(
+		[
+		'echarts',
+		// 'echarts/chart/bar',
+		// 'echarts/chart/line',
+		'echarts/chart/pie'
+		],
+		function (ec) {
+		var myChart2 = ec.init(document.getElementById('main2'));
+option2 = {
+    title : {
+        text: 'Component Analysis',
+        subtext: 'Data come from Weibo event: Tianjia Xia',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient : 'vertical',
+        x : 'left',
+        data:['User','Dont Know','Army']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType : {
+                show: true, 
+                type: ['pie', 'funnel'],
+                option: {
+                    funnel: {
+                        x: '25%',
+                        width: '50%',
+                        funnelAlign: 'left',
+                        max: 1548
+                    }
+                }
+            },
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    series : [
+        {
+            name:'Type follows',
+            type:'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:a, name:'User'},
+                {value:b, name:'Dont know'},
+                {value:c, name:'Army'},
+            ]
+        }
+    ]
+};                   
+	myChart2.setOption(option2);
+});
+}
+draw_pie(50000,50000,50000);
+</script>
+
+
+
+
+<script>
+!function ($) {
+	$(document).on("click","ul.nav li.parent > a > span.icon", function(){          
+			$(this).find('em:first').toggleClass("glyphicon-minus");      
+			}); 
+	$(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
+}(window.jQuery);
+
+$(window).on('resize', function () {
+		if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
+		})
+$(window).on('resize', function () {
+		if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
+		})
+</script>
+
+</body>
+
+</html>
